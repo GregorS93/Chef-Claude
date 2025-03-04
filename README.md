@@ -16,7 +16,7 @@ A robust and modern project built with an API AI interaction, based on React. Wi
 - Responsive design, compatible with tablet and mobile devices
 - Clear and modular code structure
 - AI API integration
-- real time data fetching
+- Real time data fetching
 
 ## Getting Started
 
