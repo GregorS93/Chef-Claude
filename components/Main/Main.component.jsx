@@ -1,13 +1,15 @@
-import React from "react";
-import IngredientsList from "../IngredientsList/IngredientsList-component";
-import ClaudeRecipe from "../ClaudeRecipe/ClaudeRecipe-component";
+import { useRef, useState, useEffect } from "react";
+import IngredientsList from "../IngredientsList/IngredientsList.component";
+import ClaudeRecipe from "../ClaudeRecipe/ClaudeRecipe.component";
 import { getRecipeFromMistral } from "../../api/ai";
 
 export default function Main() {
-  const [ingredients, setIngredients] = React.useState([]);
-  const [recipe, setRecipe] = React.useState("");
-  const recipeSection = React.useRef(null);
-  React.useEffect(() => {
+  const [ingredients, setIngredients] = useState([]);
+  const [recipe, setRecipe] = useState("");
+  const [gettingRecipe, setGettingRecipe] = useState(false);
+  const recipeSection = useRef(null);
+
+  useEffect(() => {
     if (recipe !== "" && recipeSection.current !== null) {
       const yCoord =
         recipeSection.current.getBoundingClientRect().top + window.scrollY;
@@ -19,8 +21,10 @@ export default function Main() {
   }, [recipe]);
 
   async function getRecipe() {
+    setGettingRecipe(true);
     const recipeMarkdown = await getRecipeFromMistral(ingredients);
     setRecipe(recipeMarkdown);
+    setGettingRecipe(false);
   }
 
   function addIngredient(formData) {
@@ -49,9 +53,11 @@ export default function Main() {
           ref={recipeSection}
           ingredients={ingredients}
           getRecipe={getRecipe}
+          gettingRecipe={gettingRecipe}
         />
       )}
 
+      {gettingRecipe && <h1 className="loading-h">Loading...</h1>}
       {recipe && <ClaudeRecipe recipe={recipe} />}
     </main>
   );
